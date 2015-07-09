@@ -1,9 +1,3 @@
-UTEID: mcl267; mw23845;
-FIRSTNAME: Mark; Marguerite;
-LASTNAME: Laver; West-Driga;
-CSACCOUNT: mcl267; mwestdri;
-EMAIL: crusherven@yahoo.com; mwestdri@gmail.com;
-
 [Program 5]
 [Description]
 There are 2 java files: jcrypt.java is the provided file from the assignment webpage.  We use it only to call the jcrypt.crypt() function.  The main method is in the PasswordCrack.java file.  We read in the dictionary and the passwd file as arraylists, then parse and store the user information into a nested hashmap.  Then we iterate through each user, trying 200 different possibilities for each word.  The words are derived from the username, first name, last name, and provided dictionary.  If the password is not found, we take the cached guesses from the first pass and mangle each of them further.
