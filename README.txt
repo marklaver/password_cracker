@@ -4,91 +4,72 @@ LASTNAME: Laver; West-Driga;
 CSACCOUNT: mcl267; mwestdri;
 EMAIL: crusherven@yahoo.com; mwestdri@gmail.com;
 
-[Program 4]
+[Program 5]
 [Description]
-***************************
-There is only one java file: 
-AES.java implements AES encryption and decryption in the main method.
-First, it reads in the input file and key file as detailed in the
-specification. The contents are loaded into arrays of the appropriate
-dimensions, and are then encrypted or decrypted based on the 'e' or 'd' flag passed in at execution, via the command line.
-Our implementation of the decryption portion of this algorithm, is different from the structure recommended by the standard, and instead directly inverts the order of operations occurring in the encryption procedure.
+There are 2 java files: jcrypt.java is the provided file from the assignment webpage.  We use it only to call the jcrypt.crypt() function.  The main method is in the PasswordCrack.java file.  We read in the dictionary and the passwd file as arraylists, then parse and store the user information into a nested hashmap.  Then we iterate through each user, trying 200 different possibilities for each word.  The words are derived from the username, first name, last name, and provided dictionary.  If the password is not found, we take the cached guesses from the first pass and mangle each of them further.
+
+To compile our program:
+javac *.java
+java PasswordCrack dict1 test1
 
 [Finish]
-This program is done.
-We used the mix-columns code provided by Professor Young
-We pulled a method to convert String to binary from StackOverflow:
-http://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
-
-[Timing Information]
-
-We ran a AEStestvectors.py to generate a test vector of 60k linesls -, and ran it with the bash command "time" with our program to find the encryption/decryption time.  Below is the command used to encrypt/decrypt along with the results.
-
-time java AES e key1 throughputtest 
-
-encryption data:
-time: 1.396s
-size: 1.9MB
-throughput: 1.361 MB/sec
-
-decryption data:
-time: 1.378s
-size: 1.9MB
-throughput: 1.379 MB/sec
+We completely finished this assignment.
 
 [Test Cases]
 [Input of test 1]
-[command line]
-javac *.java
-java AES e key1 test1
-java AES d key1 test1.enc
-diff test1 test1.enc.dec
-
-test1
+https://www.cs.utexas.edu/~byoung/cs361/passwd1
 
 [Output of test 1]
- 
-test1.enc
-test1.enc.dec
+We can crack 18 cases.
+List of cracked: 
+liagiba
+michael
+Salizar
+abort6
+amazing
+eeffoc
+rdoctor
+doorrood
+enoggone
+Impact
+keyskeys
+sATCHEL
+squadro
+THIRTY
+icious
+obliqu3
+teserP
+sHREWDq
+
+
+We did not crack 4.
+List of uncracked:
+litpeR
+hI6d$pC2
 
 [Input of test 2]
-[command line]
-javac *.java
-java AES e key2 test2
-java AES d key2 test2.enc
-
-key2
-test2
+https://www.cs.utexas.edu/~byoung/cs361/passwd2
 
 [Output of test 2]
+nosral
+cOnNeLlY
+^bribed
+dIAMETER
+enchant$
+eltneg
+INDIGNITY
+Saxon
+tremors
+ellows
+zoossooz
+soozzoos
+Lacque
+Swine3
+uPLIFTr
 
-test2.enc
-test2.enc.dec
-
-[Input of test 3]
-[command line]
-javac *.java
-java AES e key3 test3
-java AES d key3 test3.enc
-
-key3
-test3
-
-[Output of test 3]
-
-test3.enc
-test3.enc.dec
-
-[Input of test 4]
-[command line]
-javac *.java
-java AES e key4 test4
-java AES d key4 test4.enc
-
-key4
-test4
-
-[Output of test 4]
-
-test4.enc
-test4.enc.dec
+We did not crack 5.
+e4EyEMhNzYLJU
+w@FxBZv.d0y/U
+KenK1CTDGr/7k
+!cSaQELm/EBV.
+T8U5jQaDVv/o2

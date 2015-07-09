@@ -19,7 +19,8 @@ public class PasswordCrack {
 				token_maps.add(temp);
 			}
 		}
-
+		ArrayList<String> mangles = new ArrayList<String>();
+		ArrayList<String> double_mangles = new ArrayList<String>();
 
 		boolean found = false;
 
@@ -28,29 +29,33 @@ public class PasswordCrack {
 		int count = 0;
 
 		while (idx < 200*(3+dictionary.size())) {
+			boolean flag = true;
+
 			for (Map h : token_maps) {
 				String guess = "";
 				String[] guesses = new String[200];
 
 				if (idx < 200)
-					guesses = get_permutation((String)h.get("fname"));
+					guesses = get_permutation((String)h.get("fname"), true);
 				else if (idx < 400)
-					guesses = get_permutation((String)h.get("lname"));
+					guesses = get_permutation((String)h.get("lname"), true);
 				else if (idx < 600)
-					guesses = get_permutation((String)h.get("username"));
+					guesses = get_permutation((String)h.get("username"), true);
 				else //dictionary
-				{
-					//System.out.println("index = "+ idx+", dictionary index = "+didx);
-					//guesses = get_permutation(dictionary.get(didx));
-					guesses = get_permutation(dictionary.get(didx));
-				}
+					guesses = get_permutation(dictionary.get(didx), true);
+
 				
 				if (h.get("solved_pw") == null) {
 
-					//guess all the things(permutations)
-					//System.out.println("USERNAME: "+(String)h.get("username"));
 					String result = "";
 					guess = guesses[idx%200];
+
+					// Cache each mangled element
+					if (flag) {
+						mangles.add(guess);
+						flag = false;
+					}
+
 					result = check_password(guess, (String)h.get("passwd"));
 					h.put("solved_pw", result);
 					found = (result != null);
@@ -59,7 +64,7 @@ public class PasswordCrack {
 
 					//add to "solved" structure of some kind: username, password, encrypted password
 						count++;
-						System.out.println("Found " + (String)h.get("username") + "'s pwd: " + guess);
+						System.out.println("Found " + (String)h.get("username") + "'s pwd: \t" + guess);
 						found = false;
 					}
 				}
@@ -70,54 +75,75 @@ public class PasswordCrack {
 
 		idx = 0;
 		didx = 0;
-		while (idx < 200*(3+dictionary.size())) {
+		while (idx < 200*(mangles.size())) {
+			boolean flag = true;
+			String[] guesses = new String[200];
+			guesses = get_permutation(mangles.get(didx % mangles.size()), false);
+
 			for (Map h : token_maps) {
-				if (h.get("solved_pw") == null)
+				if (h.get("solved_pw") != null)
 					continue;
 				String guess = "";
-				String[] guesses = new String[200];
 
-				if (idx < 200)
-					guesses = get_permutation((String)h.get("fname"));
-				else if (idx < 400)
-					guesses = get_permutation((String)h.get("lname"));
-				else if (idx < 600)
-					guesses = get_permutation((String)h.get("username"));
-				else //dictionary
-					guesses = get_permutation(dictionary.get(didx));
+				if (h.get("solved_pw") == null) {
+					String result = "";
+					guess = guesses[idx%200];
+					result = check_password(guess, (String)h.get("passwd"));
+					h.put("solved_pw", result);
+					found = (result != null);
 
-				int sidx = 0;
-				String[] sub_guesses = new String[200];
-				for (String s : guesses) {
-					sub_guesses = get_permutation(s);
-					for (String t : sub_guesses) {
-						//if (idx % 100 == 0) System.out.println(s);
-
-						if (h.get("solved_pw") == null) {
-							String result = "";
-							//guess = sub_guesses[sidx%200];
-							//if (idx % 100 == 0) System.out.println("\t" + t);
-							result = check_password(t, (String)h.get("passwd"));
-							h.put("solved_pw", result);
-							found = (result != null);
-
-							if (found) {
-								count++;
-								System.out.println("Found " + (String)h.get("username") + "'s pwd: " + guess);
-								found = false;
-							}
-						}
+					if (flag) {
+						double_mangles.add(guess);
+						flag = false;
 					}
-					sidx++;
+
+					if (found) {
+						count++;
+						System.out.println("Found " + (String)h.get("username") + "'s pwd: \t" + guess);
+						found = false;
+					}
 				}
 			}
-			if (idx++ > 600 && (idx % 200 == 0))
+			if (idx++ % 200 == 0)
 				didx++;
 		}
 
+		// for (String s : double_mangles)
+		//  	System.out.println(s);
+		System.out.println("entering next loop: " + double_mangles.size());
+
+		idx = 0;
+		didx = 0;
+		while (idx < 200*(double_mangles.size())) {
+			String[] guesses = new String[200];
+			guesses = get_permutation(double_mangles.get(didx % double_mangles.size()), false);
+
+			for (Map h : token_maps) {
+				if (h.get("solved_pw") != null)
+					continue;
+				String guess = "";
+				System.out.println("trying: " + guesses[idx%200]);
+
+				if (h.get("solved_pw") == null) {
+					String result = "";
+					guess = guesses[idx%200];
+					result = check_password(guess, (String)h.get("passwd"));
+					h.put("solved_pw", result);
+					found = (result != null);
+
+					if (found) {
+						count++;
+						System.out.println("Found " + (String)h.get("username") + "'s pwd: \t" + guess);
+						found = false;
+					}
+				}
+			}
+			if (idx++ % 200 == 0)
+				didx++;
+		}		
+
 
 		System.out.println("Found " + count + " passwords");
-//		writeFile(dictionary, dict_file);
 	}
 
 	static String check_password(String guess, String password) {
@@ -125,10 +151,6 @@ public class PasswordCrack {
 		
 		String salt = password.substring(0,2);
 		String encrypted_guess = jcrypt.crypt(salt, guess);
-		// System.out.println("guess is:           "+guess);
-		// System.out.println("");
-		// System.out.println("password is:        "+password);
-		// System.out.println("encrypted_guess is: "+encrypted_guess);
 		String solved_pw = null;
 		
 		boolean found = encrypted_guess.equals(password);
@@ -154,12 +176,15 @@ public class PasswordCrack {
 		}
 		return new String(cs);
 	}
-	static String[] get_permutation(String s) {
+
+	static String[] get_permutation(String s, boolean lower) {
 		// Size of array is 12 listed permutations, plus appending or prepending any ascii
 		// character from 33 -> 126. = 94.  Double for appending/prepending, 188 + 12 = 200.
+
 		String[] guesses = new String[200];  
 		int len = s.length();
-		s = s.toLowerCase();
+		if(lower)
+			s = s.toLowerCase();
 		String S = s.toUpperCase();
 		int i = 0;
 		for (; i < 94; ++i) {  // append a character to the string, e.g., string9;
@@ -183,9 +208,11 @@ public class PasswordCrack {
 		guesses[i++] = toggle(s, len); //toggle case of the string, e.g., StRiNg or sTrInG;
 		guesses[i++] = toggle(S, len);
 
-
-		// for (String a : guesses)
-		// 	if (a != null) System.out.println(a);
+		// if(s.equals("preset")) {
+		// 	System.out.println("finding preset");
+		// 	for(int q = 0; q < 200; q++)
+		// 		System.out.println(guesses[q]);
+		// }
 		return guesses;
 	}
 

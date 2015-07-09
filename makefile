@@ -7,7 +7,7 @@
 	java PasswordCrack dict1 test2
 3test:
 	javac *.java
-	time java PasswordCrack orig_dict test1 > test3.out &
+	java PasswordCrack smaller_dictionary test1  
 4test:
 	javac *.java
 	time java PasswordCrack orig_dict test2 > test4.out &
