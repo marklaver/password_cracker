@@ -108,21 +108,16 @@ public class PasswordCrack {
 				didx++;
 		}
 
-		// for (String s : double_mangles)
-		//  	System.out.println(s);
-		System.out.println("entering next loop: " + double_mangles.size());
-
-		idx = 0;
-		didx = 0;
-		while (idx < 200*(double_mangles.size())) {
+		double idxl = 0;
+		double didxl = 0;
+		while (idxl < (200.0*(double_mangles.size()))) {
 			String[] guesses = new String[200];
-			guesses = get_permutation(double_mangles.get(didx % double_mangles.size()), false);
+			guesses = get_permutation(double_mangles.get((didxl % double_mangles.size())), false);
 
 			for (Map h : token_maps) {
 				if (h.get("solved_pw") != null)
 					continue;
 				String guess = "";
-				System.out.println("trying: " + guesses[idx%200]);
 
 				if (h.get("solved_pw") == null) {
 					String result = "";
@@ -139,7 +134,7 @@ public class PasswordCrack {
 				}
 			}
 			if (idx++ % 200 == 0)
-				didx++;
+				didxl++;
 		}		
 
 

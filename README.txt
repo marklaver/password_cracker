@@ -10,7 +10,9 @@ There are 2 java files: jcrypt.java is the provided file from the assignment web
 
 To compile our program:
 javac *.java
-java PasswordCrack dict1 test1
+java PasswordCrack dictionary users1
+
+A makefile is included to do this; simply do "make 1test" or "make 2test".
 
 [Finish]
 We completely finished this assignment.
@@ -20,7 +22,7 @@ We completely finished this assignment.
 https://www.cs.utexas.edu/~byoung/cs361/passwd1
 
 [Output of test 1]
-We can crack 18 cases.
+We can crack 18 cases in 4m 49s.
 List of cracked: 
 liagiba
 michael
@@ -42,7 +44,7 @@ teserP
 sHREWDq
 
 
-We did not crack 4.
+We did not crack 2.
 List of uncracked:
 litpeR
 hI6d$pC2
@@ -51,6 +53,7 @@ hI6d$pC2
 https://www.cs.utexas.edu/~byoung/cs361/passwd2
 
 [Output of test 2]
+We can crack 15 cases in 7m 51s.
 nosral
 cOnNeLlY
 ^bribed
@@ -68,8 +71,8 @@ Swine3
 uPLIFTr
 
 We did not crack 5.
-e4EyEMhNzYLJU
-w@FxBZv.d0y/U
-KenK1CTDGr/7k
-!cSaQELm/EBV.
-T8U5jQaDVv/o2
+jennifer
+victor
+rachel
+maria
+paige
